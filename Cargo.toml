@@ -1,0 +1,17 @@
+[package]
+name = "rational"
+version = "0.1.0"
+authors = ["Nathan Graule <solarliner@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+num-traits = "0.2.8"
+num-complex = { version = "0.2.3", optional = true }
+
+[features]
+complex = ["num-complex"]
+
+[[example]]
+name = "complex"
+path = "examples/complex.rs"
+required-features = ["complex"]
