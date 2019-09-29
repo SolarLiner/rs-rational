@@ -1,0 +1,18 @@
+os:
+  - linux
+  - osx
+language: rust
+rust:
+  - stable
+  - nightly
+cache: cargo
+matrix:
+  allow_features:
+    - rust: nightly
+  fast_finish: true
+stages:
+  - test
+jobs:
+  include:
+    - stage: test
+      script: cargo test
