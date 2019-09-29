@@ -1,7 +1,7 @@
-use num_traits::{Float, Num, One, Zero};
+use num_traits::{Num, One, Zero};
 use std::cmp::Ordering;
 use std::fmt::{self, Display};
-use std::ops::{Add, Div, Mul, Rem, Sub};
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Rem, RemAssign, Sub, SubAssign};
 
 #[cfg(feature = "complex")]
 mod complex;
@@ -88,6 +88,12 @@ impl<T: RationalItem + Copy> Add for Rational<T> {
         Self::new(a + b, self.den * other.den)
     }
 }
+impl<T: RationalItem + Copy> Add<T> for Rational<T> {
+    type Output = Self;
+    fn add(self, other: T) -> Self::Output {
+        Self::new(self.num + self.den * other, self.den)
+    }
+}
 
 impl<T: RationalItem + Copy> Sub for Rational<T> {
     type Output = Self;
@@ -98,11 +104,23 @@ impl<T: RationalItem + Copy> Sub for Rational<T> {
         Self::new(a - b, self.den * other.den)
     }
 }
+impl<T: RationalItem + Copy> Sub<T> for Rational<T> {
+    type Output = Self;
+    fn sub(self, other: T) -> Self::Output {
+        Self::new(self.num - self.den * other, self.den)
+    }
+}
 
 impl<T: RationalItem + Copy> Mul for Rational<T> {
     type Output = Self;
     fn mul(self, other: Self) -> Self::Output {
         Self::new(self.num * other.num, self.den * other.den)
+    }
+}
+impl<T: RationalItem + Copy> Mul<T> for Rational<T> {
+    type Output = Self;
+    fn mul(self, other: T) -> Self::Output {
+        Self::new(self.num * other, self.den)
     }
 }
 
@@ -112,11 +130,89 @@ impl<T: RationalItem + Copy> Div for Rational<T> {
         self * other.inverse()
     }
 }
+impl<T: RationalItem + Copy> Div<T> for Rational<T> {
+    type Output = Self;
+    fn div(self, other: T) -> Self::Output {
+        Self::new(self.num, self.den * other)
+    }
+}
 
 impl<T: RationalItem + Copy> Rem for Rational<T> {
     type Output = Self;
     fn rem(self, other: Self) -> Self::Output {
         Self::new((self.num % other.num) * self.den, other.den * self.den)
+    }
+}
+impl<T: RationalItem + Copy> Rem<T> for Rational<T> {
+    type Output = Self;
+    fn rem(self, other: T) -> Self::Output {
+        Self::new((self.num % other) * self.den, self.den)
+    }
+}
+
+impl<T: RationalItem + Copy> AddAssign for Rational<T> {
+    fn add_assign(&mut self, other: Self) {
+        let r = *self + other;
+        self.num = r.num;
+        self.den = r.den;
+    }
+}
+impl<T: RationalItem + Copy + AddAssign> AddAssign<T> for Rational<T> {
+    fn add_assign(&mut self, other: T) {
+        self.num += self.den * other;
+    }
+}
+
+impl<T: RationalItem + Copy> SubAssign for Rational<T> {
+    fn sub_assign(&mut self, other: Self) {
+        let r = *self - other;
+        self.num = r.num;
+        self.den = r.den;
+    }
+}
+impl<T: RationalItem + Copy + SubAssign> SubAssign<T> for Rational<T> {
+    fn sub_assign(&mut self, other: T) {
+        self.num -= self.den * other;
+    }
+}
+
+impl<T: RationalItem + Copy> MulAssign for Rational<T> {
+    fn mul_assign(&mut self, other: Self) {
+        let r = *self * other;
+        self.num = r.num;
+        self.den = r.den;
+    }
+}
+impl<T: RationalItem + Copy + MulAssign> MulAssign<T> for Rational<T> {
+    fn mul_assign(&mut self, other: T) {
+        self.num *= other;
+    }
+}
+
+impl<T: RationalItem + Copy> DivAssign for Rational<T> {
+    fn div_assign(&mut self, other: Self) {
+        let r = *self / other;
+        self.num = r.num;
+        self.den = r.den;
+    }
+}
+impl<T: RationalItem + Copy + DivAssign> DivAssign<T> for Rational<T> {
+    fn div_assign(&mut self, other: T) {
+        self.num /= other;
+    }
+}
+
+impl<T: RationalItem + Copy> RemAssign for Rational<T> {
+    fn rem_assign(&mut self, other: Self) {
+        let r = *self % other;
+        self.num = r.num;
+        self.den = r.den;
+    }
+}
+impl<T: RationalItem + Copy + MulAssign + RemAssign> RemAssign<T> for Rational<T> {
+    fn rem_assign(&mut self, other: T) {
+        self.num %= other;
+        self.num *= self.den;
     }
 }
 
