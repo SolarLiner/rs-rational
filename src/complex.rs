@@ -22,3 +22,18 @@ impl<T: RationalItem + Num + Copy> Into<Complex<Rational<T>>> for Rational<Compl
         Complex::new(re, im)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::Rational;
+    use crate::traits::{Eval};
+    use num_complex::Complex;
+
+    #[test]
+    fn complex() {
+        let r1 = Rational::new(Complex::new(1, 2), Complex::new(3, -4));
+        let rf: Complex<_> = r1.into();
+        println!("{}", r1);
+        assert_eq!(Complex::new(Rational::new(-1, 5), Rational::new(2, 5)), rf);
+    }
+}
