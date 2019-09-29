@@ -7,11 +7,18 @@ edition = "2018"
 [dependencies]
 num-traits = "0.2.8"
 num-complex = { version = "0.2.3", optional = true }
+nalgebra = { version = "0.18.1", optional = true }
 
 [features]
 complex = ["num-complex"]
+algebra = ["nalgebra"]
 
 [[example]]
 name = "complex"
 path = "examples/complex.rs"
 required-features = ["complex"]
+
+[[example]]
+name = "algebra"
+path = "examples/algebra.rs"
+required-features = ["algebra"]
