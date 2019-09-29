@@ -22,3 +22,8 @@ required-features = ["complex"]
 name = "algebra"
 path = "examples/algebra.rs"
 required-features = ["algebra"]
+
+[[example]]
+name = "complex_algebra"
+path = "examples/complex_algebra.rs"
+required-features = ["complex", "algebra"]
