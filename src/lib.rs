@@ -1,10 +1,12 @@
-use num_traits::{Num, One, Zero};
+use num_traits::{Float, Num, One, Zero};
 use std::cmp::Ordering;
 use std::fmt::{self, Display};
 use std::ops::{Add, Div, Mul, Rem, Sub};
 
+#[cfg(feature = "complex")]
+mod complex;
 mod traits;
-pub use traits::{Gcd, RationalItem};
+pub use traits::{Eval, Gcd, RationalItem};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Rational<T: RationalItem> {
@@ -66,8 +68,13 @@ impl<T: RationalItem + Display> Display for Rational<T> {
     }
 }
 
-impl<T: RationalItem + Into<f64>> Into<f64> for Rational<T> {
-    fn into(self) -> f64 {
+impl<T: RationalItem + Into<f32>> Eval<f32> for Rational<T> {
+    fn eval(self) -> f32 {
+        self.num.into() / self.den.into()
+    }
+}
+impl<T: RationalItem + Into<f64>> Eval<f64> for Rational<T> {
+    fn eval(self) -> f64 {
         self.num.into() / self.den.into()
     }
 }
@@ -150,7 +157,7 @@ impl<T: RationalItem + Num + Copy> Num for Rational<T> {
 
 #[cfg(test)]
 mod tests {
-    use super::Rational;
+    use super::{Eval, Rational};
     use num_traits::Num;
 
     #[test]
@@ -158,6 +165,11 @@ mod tests {
         assert_eq!(Rational::new(1, 2), Rational::new(4, 8));
         assert_eq!(Rational::new(0, 1), Rational::new(0, 4));
         assert_eq!(Rational::new(0, 0), Rational::new(3, 0));
+    }
+
+    #[test]
+    fn eval() {
+        assert_eq!(0.5, Rational::new(1, 2).eval())
     }
 
     #[test]
